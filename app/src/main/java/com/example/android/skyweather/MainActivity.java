@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,17 +20,69 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         WeatherInfo output = QueryUtils.parseJSON(JSON_WEATHER);
+        TextView textView;
 
-        TextView cityName = (TextView) findViewById(R.id.city_name);
-        cityName.setText(output.getCity());
-        
-        TextView tempText = (TextView) findViewById(R.id.temperature);
-        tempText.setText(formatDecimals(output.getTemperature()) + DEGREE_SYMBOL + " C");
+        setTitle(output.getCity() + ", " + output.getCountryCode());
+
+        textView = (TextView) findViewById(R.id.temperature);
+        textView.setText(formatDecimals(output.getTemperature()) + DEGREE_SYMBOL);
+
+        textView = (TextView) findViewById(R.id.weather_desc);
+        textView.setText(output.getWeatherDescription());
+
+        textView = (TextView) findViewById(R.id.wind_desc);
+        textView.setText("Wind flowing at " + output.getWindSpeed() + "mph in the direction " + formatDecimals(output.getWindDirection()) + DEGREE_SYMBOL);
+
+        Date date = new Date(output.getDate() * 1000);
+
+        textView = (TextView) findViewById(R.id.day);
+        textView.setText(formatDay(date));
+
+        textView = (TextView) findViewById(R.id.date);
+        textView.setText(formatDate(date) + ", " + formatTime(date));
+
+        textView = (TextView) findViewById(R.id.pressure);
+        textView.setText(formatDecimals(output.getPressure()));
+
+        textView = (TextView) findViewById(R.id.humidity);
+        textView.setText(formatDecimals(output.getHumidity()) + "%");
+
+        textView = (TextView) findViewById(R.id.cloudiness);
+        textView.setText(formatDecimals(output.getCloudiness()) + "%");
+
+        date = new Date(output.getSunrise() * 1000);
+        textView = (TextView) findViewById(R.id.sunrise_time);
+        textView.setText("Sunrise at " + formatTime(date));
+
+        date = new Date(output.getSunset() * 1000);
+        textView = (TextView) findViewById(R.id.sunset_time);
+        textView.setText("Sunset at " + formatTime(date));
 
     }
 
     private String formatDecimals (Double magnitude) {
-        DecimalFormat formatter = new DecimalFormat("0.0");
+        DecimalFormat formatter = new DecimalFormat("0");
         return formatter.format(magnitude);
+    }
+
+    /**
+     * Return the formatted date string (i.e. "Mar 3, 1984") from a Date object.
+     */
+    private String formatDate(Date dateObject) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("LLL dd, yyyy");
+        return dateFormat.format(dateObject);
+    }
+
+    private String formatDay(Date dateObject){
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE");
+        return dateFormat.format(dateObject);
+    }
+
+    /**
+     * Return the formatted date string (i.e. "4:30 PM") from a Date object.
+     */
+    private String formatTime(Date dateObject) {
+        SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a");
+        return timeFormat.format(dateObject);
     }
 }
