@@ -23,11 +23,11 @@ public class MainActivity extends AppCompatActivity {
         cityName.setText(output.getCity());
         
         TextView tempText = (TextView) findViewById(R.id.temperature);
-        tempText.setText(formatMagnitude(output.getTemperature()) + DEGREE_SYMBOL + " C");
+        tempText.setText(formatDecimals(output.getTemperature()) + DEGREE_SYMBOL + " C");
 
     }
 
-    private String formatMagnitude (Double magnitude) {
+    private String formatDecimals (Double magnitude) {
         DecimalFormat formatter = new DecimalFormat("0.0");
         return formatter.format(magnitude);
     }

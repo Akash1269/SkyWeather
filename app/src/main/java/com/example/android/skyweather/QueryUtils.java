@@ -21,7 +21,29 @@ public final class QueryUtils {
         try {
             JSONObject responseJSON =  new JSONObject(inputString);
             JSONObject main = responseJSON.getJSONObject("main");
-            response = new WeatherInfo(responseJSON.getString("name"), main.getDouble("temp"));
+            JSONObject weather = responseJSON.getJSONArray("weather").getJSONObject(0);
+            JSONObject coordinates = responseJSON.getJSONObject("coord");
+            JSONObject wind = responseJSON.getJSONObject("wind");
+            JSONObject cloudPercent = responseJSON.getJSONObject("clouds");
+            JSONObject details = responseJSON.getJSONObject("sys");
+
+            response = new WeatherInfo(
+                    responseJSON.getString("name"),
+                    details.getString("country"),
+                    weather.getString("main"),
+                    weather.getString("description"),
+                    responseJSON.getLong("dt"),
+                    details.getLong("sunrise"),
+                    details.getLong("sunset"),
+                    main.getDouble("pressure"),
+                    main.getDouble("humidity"),
+                    wind.getDouble("speed"),
+                    wind.getDouble("deg"),
+                    cloudPercent.getDouble("all"),
+                    coordinates.getDouble("lon"),
+                    coordinates.getDouble("lat"),
+                    main.getDouble("temp")
+            );
 
         }catch (JSONException e){
             Log.e(LOG_TAG,"JSON exception occurred", e);
